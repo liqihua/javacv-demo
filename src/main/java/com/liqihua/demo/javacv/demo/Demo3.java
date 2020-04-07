@@ -10,12 +10,16 @@ import java.nio.ShortBuffer;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 本地音频(话筒设备)和视频(摄像头)抓取、混合并推送(录制)到服务器(本地)
+ */
 public class Demo3 {
 
 
     public static void main(String[] args) {
         try {
-            recordWebcamAndMicrophone(0,4,"rtmp://live.jmqyglb.com/aa/bb?auth_key=1584446385-0-0-50f82684ce1236f16eec3ec05d42ae37",480,320,25);
+            //recordWebcamAndMicrophone(0,4,"rtmp://live.jmqyglb.com/aa/bb?auth_key=1584446385-0-0-50f82684ce1236f16eec3ec05d42ae37",480,320,25);
+            recordWebcamAndMicrophone(0,0,"output.mp4",480,320,25);
         } catch (FrameGrabber.Exception e) {
             e.printStackTrace();
         }
@@ -194,7 +198,7 @@ public class Demo3 {
                 // 通过AudioSystem获取本地音频混合器信息
                 Mixer.Info[] minfoSet = AudioSystem.getMixerInfo();
                 // 通过AudioSystem获取本地音频混合器
-                //Mixer mixer = AudioSystem.getMixer(minfoSet[AUDIO_DEVICE_INDEX]);
+                Mixer mixer = AudioSystem.getMixer(minfoSet[AUDIO_DEVICE_INDEX]);
                 // 通过设置好的音频编解码器获取数据线信息
                 DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
                 try {
@@ -234,7 +238,7 @@ public class Demo3 {
                                 ShortBuffer sBuff = ShortBuffer.wrap(samples, 0, nSamplesRead);
                                 // 按通道录制shortBuffer
                                 recorder.recordSamples(sampleRate, numChannels, sBuff);
-                            } catch (org.bytedeco.javacv.FrameRecorder.Exception e) {
+                            } catch (FrameRecorder.Exception e) {
                                 e.printStackTrace();
                             }
                         }
